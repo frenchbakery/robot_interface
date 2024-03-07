@@ -28,6 +28,7 @@
         <q-item
           icon="info"
           label="Essential Links"
+          to="/"
         >
           Overview
           </q-item>
