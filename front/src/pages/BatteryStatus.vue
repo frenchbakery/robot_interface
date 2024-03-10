@@ -2,7 +2,7 @@
   <q-page class="q-ma-md">
     <q-card class="q-pa-md">
       <div class="text-h6">Battery Status</div>
-      <div v-for="(value, key) in data" :key="key">
+      <div v-for="(value, key) in result" :id="key" :key="key">
         <div class="text-h6">{{ key }}:</div>
 
         <VuePlotly :data="[value]" :layout="{
@@ -21,23 +21,21 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { VuePlotly } from 'vue3-plotly';
 
 
 const url = 'ws://localhost:5000/getBatteryStats';
 
 const socket = new WebSocket(url);
-const data = ref({})
+const data = ref({} as Record<string, object>);
+
+const route = useRoute();
 
 socket.onopen = (event) => {
   socket.send('');
   console.log(event);
-  /* setInterval(() => {
-    const sendMessage = JSON.stringify({ ping: 1 });
-    socket.send(sendMessage);
-  }, 1); */
-
 };
 
 socket.onmessage = (event) => {
@@ -45,36 +43,19 @@ socket.onmessage = (event) => {
   data.value = JSON.parse(event.data);
 };
 
-/* onMounted(() => {
-  socket.onopen = (event) => {
-    socket.send('');
-    console.log(event);
+socket.onclose = (event) => {
+  console.log(event)
+}
 
-    interval = setInterval(() => {
-    const sendMessage = JSON.stringify({ ping: 1 });
-    socket.send(sendMessage);
-  }, 120000);
-  };
-
-  socket.addEventListener('message', (event) => {
-    console.log(event.data);
-    data.value = JSON.parse(event.data);
-    socket.close();
-  });
-
-  socket.onerror = function (error) {
-    console.log(error);
-  };
-
-  socket.onclose = function (event) {
-    console.log(event);
-    if (event.wasClean) {
-      console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-    } else {
-      console.log('[close] Connection died');
-    }
-  };
-}) */
+const result = computed(() => {
+  const param = route.params.id as string;
+  if (param && data.value[param]) {
+    const res = {} as Record<string, object>;
+    res[route.params.id as string] = data.value[route.params.id as string]
+    return res;
+  }
+  return data.value;
+});
 
 </script>
 

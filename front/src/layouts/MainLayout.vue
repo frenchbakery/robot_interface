@@ -35,6 +35,9 @@
         <q-item to="/battery">
           Battery
         </q-item>
+        <q-item to="/servo">
+          Servo
+        </q-item>
       </q-list>
     </q-drawer>
 

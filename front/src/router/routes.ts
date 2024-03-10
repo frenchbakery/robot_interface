@@ -1,5 +1,6 @@
 import { RouteRecordRaw } from 'vue-router';
 import BatteryStatus from 'pages/BatteryStatus.vue';
+import ServoPage from 'pages/ServoPage.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -7,8 +8,14 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: '/battery',
+        name: 'battery',
+        path: '/battery/:id?',
         component: BatteryStatus,
+      },
+      {
+        name: 'servo',
+        path: '/servo/:id?',
+        component: ServoPage,
       },
       {
         path: '',
