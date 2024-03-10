@@ -38,6 +38,9 @@
         <q-item to="/servo">
           Servo
         </q-item>
+        <q-item to="/script">
+          System
+        </q-item>
       </q-list>
     </q-drawer>
 

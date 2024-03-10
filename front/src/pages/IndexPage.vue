@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import BatteryStatus from 'src/components/BatteryStatus.vue';
-import { ref } from 'vue';
+import { onBeforeUnmount, ref } from 'vue';
 
 const url = 'ws://localhost:5000/getCurrentBatteryStats';
 
@@ -31,4 +31,8 @@ socket.addEventListener('message', (event) => {
   console.log(event.data);
   data.value = JSON.parse(event.data);
 });
+
+onBeforeUnmount(() => {
+  socket.close()
+})
 </script>

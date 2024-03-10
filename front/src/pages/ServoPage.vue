@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onBeforeUnmount, ref } from 'vue';
 
 const url = 'ws://localhost:5000/servo';
 
@@ -38,6 +38,10 @@ socket.onmessage = (event) => {
 socket.onclose = (event) => {
   console.log(event)
 }
+
+onBeforeUnmount(() => {
+  socket.close()
+})
 
 const updateServo = (event) => {
   socket.send(JSON.stringify(data.value))

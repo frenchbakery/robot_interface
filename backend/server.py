@@ -1,7 +1,7 @@
 import sqlite3
 import json
 import asyncio
-from websockets.server import serve
+from websockets.server import serve, WebSocketServerProtocol
 
 con = sqlite3.connect('robotics.db', check_same_thread=False)
 cur = con.cursor()
@@ -60,14 +60,28 @@ async def servo(websocket, data):
     # await websocket.send(json.dumps(res))
     await websocket.send(json.dumps(res))
 
-clients = []
+async def script(websocket, data):
+    print('received script request')
+    print(data)
 
-async def receiveCommandsLoop(client):
-    while True:
-        msg = await client.recv()
-        print(msg)
+    data = json.loads(data)
+    if data['type'] == 'start':
+        print('starting script')
+        # start script
+    elif data['type'] == 'stop':
+        print('stopping script')
+        # stop script
+    elif data['type'] == 'pause':
+        print('pausing script')
+        # pause script
+    elif data['type'] == 'resume':
+        print('resuming script')
+        # resume script
+    else:
+        print('invalid script command')
+    await websocket.send('script')
 
-async def handler(websocket, path):
+async def handler(websocket: WebSocketServerProtocol, path):
     print('received request')
     async for data in websocket:
         if path == "/getBatteryStats":
@@ -76,6 +90,8 @@ async def handler(websocket, path):
             await getCurrentBatStats(websocket, data)
         elif path == "/servo":
             await servo(websocket, data)
+        elif path == "/script":
+            await script(websocket, data) 
 
 
 async def main():

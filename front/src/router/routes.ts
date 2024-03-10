@@ -1,6 +1,7 @@
 import { RouteRecordRaw } from 'vue-router';
 import BatteryStatus from 'pages/BatteryStatus.vue';
 import ServoPage from 'pages/ServoPage.vue';
+import ExecuteScript from 'pages/ExecuteScript.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -16,6 +17,11 @@ const routes: RouteRecordRaw[] = [
         name: 'servo',
         path: '/servo/:id?',
         component: ServoPage,
+      },
+      {
+        name: 'script',
+        path: '/script',
+        component: ExecuteScript,
       },
       {
         path: '',

@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { VuePlotly } from 'vue3-plotly';
 
@@ -56,6 +56,10 @@ const result = computed(() => {
   }
   return data.value;
 });
+
+onBeforeUnmount(() => {
+  socket.close()
+})
 
 </script>
 
