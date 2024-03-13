@@ -2,12 +2,30 @@
   <q-page class="q-ma-md">
     <q-card class="q-pa-md">
       <div class="row">
-        <div class="col-4">
+        <div class="col-3">
           <!-- Selecting scripts -->
           <div class="text-h6">Execute Scripts</div>
+          <q-select
+            v-model="selectedScript"
+            :options="scripts"
+            label="Select a script"
+            emit-value
+            map-options
+          />
+          <q-btn label="Run" color="primary" class="q-mt-md" @click="executeScript"/>
         </div>
-        <div class="col-8">
+        <div class="col-9">
           <!-- Logging and connected nodes -->
+          <q-card class="q-pa-md">
+            <div class="text-h6">Logs</div>
+            <div class="q-mt-md">
+              <q-list bordered>
+                <q-item v-for="log in logs" :key="log">
+                  <q-item-section>{{ log }}</q-item-section>
+                </q-item>
+              </q-list>
+            </div>
+          </q-card>
         </div>
       </div>
     </q-card>
@@ -38,16 +56,26 @@ const ws = new WebSocket('ws://localhost:5000/script')
 
 ws.onopen = () => {
   console.log('Connected to websocket')
+  ws.send(JSON.stringify({type: 'fetchScripts'}))
+  ws.send(JSON.stringify({type: 'fetchConnectedNodes'}))
 }
 
 ws.onmessage = (event: MessageEvent) => {
+  // event.data: {type: str, data: any}
   console.log('Message from server ', event.data)
+  const data = JSON.parse(event.data)
+  const time = new Date(data.timestamp)
+  if (data.type === 'fetchScripts') {
+    scripts.value = data.data
+  } else if (data.type === 'log') {
+    logs.value.push([time.toISOString().substring(0, 19), data.data].join(' '))
+  }
 }
 
-ws.addEventListener('log', (event: any) => {
-  console.log('Test event', event)
-  logs.value.push(event.data)
-});
+const executeScript = () => {
+  console.log('Executing script', selectedScript.value)
+  ws.send(JSON.stringify({type: 'executeScript', data: selectedScript.value}))
+}
 </script>
 
 <style scoped></style>

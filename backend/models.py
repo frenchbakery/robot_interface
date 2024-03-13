@@ -1,5 +1,9 @@
+from dataclasses import dataclass
+from datetime import datetime
+
+@dataclass
 class ExecutionStruct:
-    def __init__(self):
-        self.type = "" # command returns, nodes, etc 
-        self.data = "" # data to be sent to the client
+    type: str
+    data: ...
+    timestamp: str = datetime.now().strftime('%Y-%m-%d %H:%M:%S') 
 

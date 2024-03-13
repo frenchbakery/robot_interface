@@ -2,6 +2,9 @@ import sqlite3
 import json
 import asyncio
 from websockets.server import serve, WebSocketServerProtocol
+import os
+
+from models import ExecutionStruct
 
 con = sqlite3.connect('robotics.db', check_same_thread=False)
 cur = con.cursor()
@@ -60,38 +63,61 @@ async def servo(websocket, data):
     # await websocket.send(json.dumps(res))
     await websocket.send(json.dumps(res))
 
-async def script(websocket, data):
+async def script(websocket: WebSocketServerProtocol, data):
     print('received script request')
     print(data)
 
     data = json.loads(data)
+
+    response = ExecutionStruct(type='any', data='')
     if data['type'] == 'start':
         print('starting script')
         # start script
     elif data['type'] == 'stop':
         print('stopping script')
         # stop script
-    elif data['type'] == 'pause':
-        print('pausing script')
-        # pause script
-    elif data['type'] == 'resume':
-        print('resuming script')
-        # resume script
+    elif data['type'] == 'fetchScripts':
+        print('fetching scripts')
+        # fetch scripts
+        files = os.listdir('scripts') 
+        response.data = files
+        response.type = 'fetchScripts'
+        await websocket.send(json.dumps(response.__dict__))
+    elif data['type'] == 'executeScript':
+        # https://www.linuxquestions.org/questions/programming-9/python%27s-subprocess-run-method-is-held-up-by-stdout-4175613294/
+        print('executing script')
+        # execute script
+        script = data['data']
+        # warten auf matteo
+        response.data = 'executing script'
+        response.type = 'log'
+        await websocket.send(json.dumps(response.__dict__))
+    elif data['type'] == 'fetchConnectedNodes':
+        print('fetching connected nodes')
+        # fetch connected nodes
+        response.data = ['node1', 'node2', 'node3']
+        response.type = 'fetchConnectedNodes'
+        await websocket.send(json.dumps(response.__dict__))
+
     else:
         print('invalid script command')
-    await websocket.send('script')
 
+connected_clients = set()
 async def handler(websocket: WebSocketServerProtocol, path):
     print('received request')
-    async for data in websocket:
-        if path == "/getBatteryStats":
-            await getBatStats(websocket, data)
-        elif path == "/getCurrentBatteryStats":
-            await getCurrentBatStats(websocket, data)
-        elif path == "/servo":
-            await servo(websocket, data)
-        elif path == "/script":
-            await script(websocket, data) 
+    connected_clients.add(websocket)
+    try:
+        async for data in websocket:
+            if path == "/getBatteryStats":
+                await getBatStats(websocket, data)
+            elif path == "/getCurrentBatteryStats":
+                await getCurrentBatStats(websocket, data)
+            elif path == "/servo":
+                await servo(websocket, data)
+            elif path == "/script":
+                await script(websocket, data) 
+    finally:
+        connected_clients.remove(websocket)
 
 
 async def main():
