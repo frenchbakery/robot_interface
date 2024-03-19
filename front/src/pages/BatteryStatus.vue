@@ -40,7 +40,10 @@ socket.onopen = (event) => {
 
 socket.onmessage = (event) => {
   console.log(event.data);
-  data.value = JSON.parse(event.data);
+  const parsedData = JSON.parse(event.data);
+  if (parsedData.type === 'getBatStats') {
+    data.value = parsedData.data;
+  }
 };
 
 socket.onclose = (event) => {

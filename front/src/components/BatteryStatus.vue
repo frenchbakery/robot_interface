@@ -26,7 +26,7 @@ const props = defineProps({
 const { percentage, isCharging } = toRefs(props);
 
 const imageSrc = computed(() => {
-  return `src/assets/battery/${Math.floor(7 * percentage.value / (100))}.png`;
+  return `src/assets/battery/${Math.floor(6 * percentage.value / (100))}.png`;
 
 });
 

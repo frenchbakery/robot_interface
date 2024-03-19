@@ -46,53 +46,6 @@ onBeforeUnmount(() => {
 const updateServo = (event) => {
   socket.send(JSON.stringify(data.value))
 }
-
-
-/* const setvalue = (event: any) => {
-  value.value = event.args.value
-}
-
-const marks = ref({
-  colorRemaining: '#fff',
-  colorProgress: '#fff',
-  type: 'line',
-  offset: '75%',
-  thickness: 5,
-  size: '15%',
-  majorSize: '15%',
-  drawAboveProgressBar: false,
-  majorInterval: 15,
-  minorInterval: 5,
-})
-
-const labels = ref({
-  offset: '90%',
-  rotate: false,
-  step: 15
-})
-
-const progressBar = ref({
-  size: '45%',
-  offset: '25%',
-  style: {
-    stroke: '#a2da39', strokeWidth: 1, fill: '#a2da39'
-  },
-  background: {
-    stroke: '#d1d2d4', strokeWidth: 1, fill: '#d1d2d4'
-  }
-})
-
-const pointer = ref({
-  type: 'arrow',
-  style: { fill: '#a2da39' },
-  size: '55%',
-  thickness: 5,
-  offset: '0%'
-}) */
-
-
-
-
 </script>
 
 <style scoped></style>

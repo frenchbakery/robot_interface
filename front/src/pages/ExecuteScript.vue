@@ -13,6 +13,16 @@
             map-options
           />
           <q-btn label="Run" color="primary" class="q-mt-md" @click="executeScript"/>
+          <div class="text-h6 q-mt-md">Compile</div>
+          <q-select
+            v-model="selectedCompileScripts"
+            :options="scripts"
+            label="Select a script"
+            emit-value
+            map-options
+            multiple
+          />
+          <q-btn label="Compile" color="primary" class="q-mt-md" @click="executeScript"/>
         </div>
         <div class="col-9">
           <!-- Logging and connected nodes -->
@@ -20,8 +30,8 @@
             <div class="text-h6">Logs</div>
             <div class="q-mt-md">
               <q-list bordered>
-                <q-item v-for="log in logs" :key="log">
-                  <q-item-section>{{ log }}</q-item-section>
+                <q-item v-for="(log, key) in logs" :key="key">
+                  <q-item-section>{{ log[0] }}: {{ log[1].msg}}</q-item-section>
                 </q-item>
               </q-list>
             </div>
@@ -49,8 +59,9 @@ import { ref } from 'vue'
 
 const scripts = ref([]);
 const connectedNodes = ref([])
-const logs = ref([] as string[])
+const logs = ref([] as any[])
 const selectedScript = ref(null);
+const selectedCompileScripts = ref(null);
 
 const ws = new WebSocket('ws://localhost:5000/script')
 
@@ -64,11 +75,11 @@ ws.onmessage = (event: MessageEvent) => {
   // event.data: {type: str, data: any}
   console.log('Message from server ', event.data)
   const data = JSON.parse(event.data)
-  const time = new Date(data.timestamp)
+  const time = new Date()
   if (data.type === 'fetchScripts') {
     scripts.value = data.data
   } else if (data.type === 'log') {
-    logs.value.push([time.toISOString().substring(0, 19), data.data].join(' '))
+    logs.value.push([time.toISOString().substring(11, 19), data.data])
   }
 }
 

@@ -5,7 +5,7 @@
       <div class="row">
         <div @click="$router.push(`/battery/${key}`)" class="col-3 q-pa-sm cursor-pointer" v-for="(value, key) in data"
           :key="key">
-          <div class="text-h6">{{ key }}: {{ value['percentage'] * 100 }} %</div>
+          <div class="text-h6">{{ key }}: {{ Math.round(value['percentage'] * 100) }} %</div>
           <battery-status :percentage="value['percentage'] * 100" :isCharging="value['is_charging']" />
         </div>
       </div>
@@ -29,7 +29,10 @@ socket.onopen = (event) => {
 
 socket.addEventListener('message', (event) => {
   console.log(event.data);
-  data.value = JSON.parse(event.data);
+  const parsedData = JSON.parse(event.data);
+  if (parsedData.type === 'getCurrentBatStats') {
+    data.value = parsedData.data;
+  }
 });
 
 onBeforeUnmount(() => {
