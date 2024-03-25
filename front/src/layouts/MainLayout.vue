@@ -32,6 +32,9 @@
         <q-item to="/script">
           System
         </q-item>
+        <q-item to="/logs">
+          Logs
+        </q-item>
       </q-list>
     </q-drawer>
 

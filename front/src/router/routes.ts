@@ -2,6 +2,7 @@ import { RouteRecordRaw } from 'vue-router';
 import BatteryStatus from 'pages/BatteryStatus.vue';
 import ServoPage from 'pages/ServoPage.vue';
 import ExecuteScript from 'pages/ExecuteScript.vue'
+import LogsView from 'pages/LogsView.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -22,6 +23,11 @@ const routes: RouteRecordRaw[] = [
         name: 'script',
         path: '/script',
         component: ExecuteScript,
+      },
+      {
+        name: 'logs',
+        path: '/logs',
+        component: LogsView,
       },
       {
         path: '',
