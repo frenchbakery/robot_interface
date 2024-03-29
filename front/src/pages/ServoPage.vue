@@ -19,7 +19,8 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from 'vue';
 
-const url = 'ws://localhost:5000/servo';
+const hostname = window.location.hostname;
+const url = `ws://${hostname}/script`;
 
 const socket = new WebSocket(url);
 const data = ref({} as Record<string, object>);

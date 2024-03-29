@@ -17,7 +17,8 @@
 import BatteryStatus from 'src/components/BatteryStatus.vue';
 import { onBeforeUnmount, ref } from 'vue';
 
-const url = 'ws://localhost:5000/getCurrentBatteryStats';
+const hostname = window.location.hostname;
+const url = `ws://${hostname}/script`;
 
 const socket = new WebSocket(url);
 const data = ref({})

@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-ma-sm">
     <div class="text-h6">Logs</div>
-    <q-card>
+    <q-card style="max-height: 350px; overflow: scroll">
       <div v-for="(value, key) in logs" :key="key">
         <q-card-section>
           <div class="text-h6">{{ value.time_stamp }}</div>
@@ -31,7 +31,9 @@ interface Log {
 
 const logs = ref([] as Log[])
 
-const url = 'ws://localhost:5000/getLogs';
+const hostname = window.location.hostname;
+const url = `ws://${hostname}/script`;
+
 const socket = new WebSocket(url);
 
 socket.onopen = (event) => {

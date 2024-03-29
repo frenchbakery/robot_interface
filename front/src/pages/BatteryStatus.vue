@@ -26,7 +26,8 @@ import { useRoute } from 'vue-router';
 import { VuePlotly } from 'vue3-plotly';
 
 
-const url = 'ws://localhost:5000/getBatteryStats';
+const hostname = window.location.hostname;
+const url = `ws://${hostname}/script`;
 
 const socket = new WebSocket(url);
 const data = ref({} as Record<string, object>);

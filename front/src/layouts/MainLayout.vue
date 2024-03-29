@@ -8,12 +8,14 @@
           Quasar App
         </q-toolbar-title>
         <div>
-          <span v-for="(value, key) in data" :key="key" style="margin: 10px; border: 1px solid black">
+          <!-- <span v-for="(value, key) in data" :key="key" style="margin: 10px; border: 1px solid black">
             {{ key }}
             <q-tooltip>
               Batterie {{ key }}: {{ Math.round(value['percentage'] * 100) }} %
             </q-tooltip>
-          </span>
+          </span> -->
+          IP: {{ ip }}
+          <q-btn flat dense class="bg-negative q-ml-md" label="Shutdown" @click="socket.send(JSON.stringify({type: 'shutdown', data: ''}))" />
         </div>
       </q-toolbar>
     </q-header>
@@ -48,19 +50,22 @@
 import { ref, onBeforeUnmount } from 'vue';
 import BatteryStatus from 'src/components/BatteryStatus.vue';
 
-const leftDrawerOpen = ref(false)
+const leftDrawerOpen = ref(true)
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
-const url = 'ws://localhost:5000/getCurrentBatteryStats';
+const hostname = window.location.hostname
+
+const url = `ws://${hostname}/script`;
 
 const socket = new WebSocket(url);
 const data = ref({})
+const ip = ref('')
 
 socket.onopen = (event) => {
-  socket.send('');
+  socket.send(JSON.stringify({type: 'getCurrentBatStats', data: ''}));
   console.log(event);
 };
 
@@ -69,6 +74,8 @@ socket.addEventListener('message', (event) => {
   const parsedData = JSON.parse(event.data);
   if (parsedData.type === 'getCurrentBatStats') {
     data.value = parsedData.data;
+  } else if(parsedData.type === 'ip') {
+    ip.value = parsedData.data;
   }
 });
 

@@ -89,7 +89,10 @@ const selectedScript = ref(null);
 const selectedCompileScripts = ref(null);
 const runningScripts = ref([] as any[])
 
-const ws = new WebSocket('ws://localhost:5000/script')
+const hostname = window.location.hostname;
+const url = `ws://${hostname}/script`;
+
+const ws = new WebSocket(url)
 
 ws.onopen = () => {
   console.log('Connected to websocket')
