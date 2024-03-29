@@ -15,7 +15,9 @@
             </q-tooltip>
           </span> -->
           IP: {{ ip }}
-          <q-btn flat dense class="bg-negative q-ml-md" label="Shutdown" @click="socket.send(JSON.stringify({type: 'shutdown', data: ''}))" />
+          <q-btn flat dense class="bg-negative q-ml-md" label="Shutdown" @click="send('shutdown')" />
+          <q-btn flat dense class="bg-negative q-ml-md" label="Reboot" @click="send('reboot')" />
+          <q-btn flat dense class="bg-negative q-ml-md" label="Reload site" @click="reload" />
         </div>
       </q-toolbar>
     </q-header>
@@ -48,9 +50,10 @@
 
 <script setup lang="ts">
 import { ref, onBeforeUnmount } from 'vue';
+import axios from 'axios';
 import BatteryStatus from 'src/components/BatteryStatus.vue';
 
-const leftDrawerOpen = ref(true)
+const leftDrawerOpen = ref(false)
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
@@ -82,4 +85,11 @@ socket.addEventListener('message', (event) => {
 onBeforeUnmount(() => {
   socket.close()
 })
+
+const reload = () => {
+  location.reload()
+}
+const send = (type: string) => {
+  axios.get(`http://${hostname}/${type}`)
+}
 </script>

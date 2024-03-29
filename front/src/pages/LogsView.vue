@@ -32,7 +32,7 @@ interface Log {
 const logs = ref([] as Log[])
 
 const hostname = window.location.hostname;
-const url = `ws://${hostname}/script`;
+const url = `ws://${hostname}/getLogs`;
 
 const socket = new WebSocket(url);
 
